@@ -12,24 +12,8 @@ namespace Csv4000
         {
             Lock(() =>
             {
-                File.Create(path).Close();
+                File.Delete(path);
             });
-
-            if (useFirstLineAsHeader)
-            {
-                var properties = typeof(T).GetProperties();
-
-                var lineValues = new List<string>();
-
-                foreach (var prop in properties)
-                {
-                    lineValues.Add(prop.Name.ToCsvString());
-                }
-
-                OpenWriter(writer =>
-                    writer.WriteLine(string.Join(";", lineValues))
-                );
-            }
         }
 
         public void Write(T item)
@@ -110,10 +94,28 @@ namespace Csv4000
         {
             Lock(() =>
                {
+                   var createHeaderLine = File.Exists(path) == false 
+                    && useFirstLineAsHeader;
+
                    using (FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                    using (StreamWriter streamWriter = new StreamWriter(fs))
                    {
                        fs.Lock(0, fs.Length);
+
+                       if (createHeaderLine)
+                       {
+                           var properties = typeof(T).GetProperties();
+
+                           var lineValues = new List<string>();
+
+                           foreach (var prop in properties)
+                           {
+                               lineValues.Add(prop.Name.ToCsvString());
+                           }
+
+                           streamWriter.WriteLine(string.Join(";", lineValues));                           
+                       }
+
                        writterAction(streamWriter);
                    }
                });
