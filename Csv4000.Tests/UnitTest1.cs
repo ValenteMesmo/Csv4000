@@ -19,8 +19,8 @@ namespace Csv4000.Tests
         [TestMethod]
         public async Task TestAsync()
         {
-            var sut = new CsvOf<MyModelExemple>(@"C:\temp\test.csv");
-            await sut.ClearAsync();
+            var sut = new CsvOf<MyModelExemple> { FilePath = () => @"C:\temp\test.csv" };
+            sut.Clear();
 
             var count = new Random().Next(1, 10);
             for (int i = 0; i < count; i++)
@@ -41,7 +41,7 @@ namespace Csv4000.Tests
         [TestMethod]
         public void Test()
         {
-            var sut = new CsvOf<MyModelExemple>(@"C:\temp\test.csv");
+            var sut = new CsvOf<MyModelExemple> { FilePath = () => @"C:\temp\test.csv" };
             sut.Clear();
 
             var count = new Random().Next(1, 10);

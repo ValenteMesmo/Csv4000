@@ -10,22 +10,8 @@ namespace Csv4000
     public partial class CsvOf<T>
     {
         private readonly static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
-        private readonly bool useFirstLineAsHeader;
-        private string path;
-
-        public CsvOf(string path, bool useFirstLineAsHeader = true)
-        {
-            this.path = path;
-            this.useFirstLineAsHeader = useFirstLineAsHeader;
-        }
-
-        public async Task ClearAsync()
-        {
-            Lock(() =>
-            {
-                File.Delete(path);
-            });
-        }
+        public bool UseFirstLineAsHeader = true;
+        public Func<string> FilePath = () => @"C:\temp\test.csv";
 
         public async Task WriteAsync(T item)
         {
@@ -50,13 +36,13 @@ namespace Csv4000
 
             await LockAsync(async () =>
             {
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(FilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (StreamReader reader = new StreamReader(fs))
                 {
                     string line;
                     var properties = typeof(T).GetProperties();
 
-                    if (useFirstLineAsHeader)
+                    if (UseFirstLineAsHeader)
                         await reader.ReadLineAsync();
 
                     while ((line = await reader.ReadLineAsync()) != null)
@@ -105,10 +91,10 @@ namespace Csv4000
         {
             await LockAsync(async () =>
             {
-                var createHeaderLine = File.Exists(path) == false
-                    && useFirstLineAsHeader;
+                var createHeaderLine = File.Exists(FilePath()) == false
+                    && UseFirstLineAsHeader;
 
-                using (FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(FilePath(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                 using (StreamWriter streamWriter = new StreamWriter(fs))
                 {
                     fs.Lock(0, fs.Length);
