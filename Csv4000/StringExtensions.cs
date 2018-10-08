@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Csv4000
+namespace Csv4000.Extensions
 {
     public static class StringExtensions
     {
