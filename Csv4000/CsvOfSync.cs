@@ -11,7 +11,7 @@ namespace Csv4000
         {
             Lock(() =>
             {
-                File.Delete(FilePath());
+                File.Delete(FilePath);
             });
         }
 
@@ -38,7 +38,7 @@ namespace Csv4000
 
             Lock(() =>
               {
-                  using (FileStream fs = new FileStream(FilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                  using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                   using (StreamReader reader = new StreamReader(fs))
                   {
                       string line;
@@ -93,10 +93,10 @@ namespace Csv4000
         {
             Lock(() =>
                {
-                   var createHeaderLine = File.Exists(FilePath()) == false 
+                   var createHeaderLine = File.Exists(FilePath) == false 
                     && UseFirstLineAsHeader;
 
-                   using (FileStream fs = new FileStream(FilePath(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                   using (FileStream fs = new FileStream(FilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                    using (StreamWriter streamWriter = new StreamWriter(fs))
                    {
                        fs.Lock(0, fs.Length);

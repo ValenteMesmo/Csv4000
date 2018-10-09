@@ -19,7 +19,7 @@ namespace Csv4000.Tests
         [TestMethod]
         public async Task TestAsync()
         {
-            var sut = new CsvOf<MyModelExemple> { FilePath = () => @"C:\temp\test.csv" };
+            CsvOf<MyModelExemple> sut = createSut();
             sut.Clear();
 
             var count = new Random().Next(1, 10);
@@ -38,10 +38,15 @@ namespace Csv4000.Tests
             Assert.AreEqual(count, result.Count());
         }
 
+        private CsvOf<MyModelExemple> createSut()
+        {
+            return new CsvOf<MyModelExemple>(@"C:\temp\test.csv");
+        }
+
         [TestMethod]
         public void Test()
         {
-            var sut = new CsvOf<MyModelExemple> { FilePath = () => @"C:\temp\test.csv" };
+            var sut = createSut();
             sut.Clear();
 
             var count = new Random().Next(1, 10);

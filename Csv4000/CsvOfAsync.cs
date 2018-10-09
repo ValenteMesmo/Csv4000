@@ -9,9 +9,14 @@ namespace Csv4000
 {
     public partial class CsvOf<T>
     {
-        private readonly static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
         public bool UseFirstLineAsHeader = true;
-        public Func<string> FilePath = () => @"C:\temp\test.csv";
+        private readonly static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+        private readonly string FilePath;
+
+        public CsvOf(string FilePath)
+        {
+            this.FilePath = FilePath;
+        }
 
         public async Task WriteAsync(T item)
         {
@@ -36,7 +41,7 @@ namespace Csv4000
 
             await LockAsync(async () =>
             {
-                using (FileStream fs = new FileStream(FilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (StreamReader reader = new StreamReader(fs))
                 {
                     string line;
@@ -91,10 +96,10 @@ namespace Csv4000
         {
             await LockAsync(async () =>
             {
-                var createHeaderLine = File.Exists(FilePath()) == false
+                var createHeaderLine = File.Exists(FilePath) == false
                     && UseFirstLineAsHeader;
 
-                using (FileStream fs = new FileStream(FilePath(), FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(FilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                 using (StreamWriter streamWriter = new StreamWriter(fs))
                 {
                     fs.Lock(0, fs.Length);
