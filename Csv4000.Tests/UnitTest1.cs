@@ -64,5 +64,22 @@ namespace Csv4000.Tests
             var result = sut.Read();
             Assert.AreEqual(count, result.Count());
         }
+
+        [TestMethod]
+        public void StringValueContainingComma()
+        {
+            var sut = createSut();
+            sut.Clear();
+
+                sut.Write(
+                    new MyModelExemple
+                    {
+                        StringValue = "testando;123"
+                    }
+                );
+
+            var result = sut.Read().First();
+            Assert.AreEqual("testando;123", result.StringValue);
+        }
     }
 }

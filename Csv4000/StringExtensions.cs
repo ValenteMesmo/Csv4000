@@ -24,7 +24,8 @@ namespace Csv4000.Extensions
                 stringValue.Contains(",")
                 || stringValue.Contains("\"")
                 || stringValue.Contains("\r")
-                || stringValue.Contains("\n");
+                || stringValue.Contains("\n")
+                || stringValue.Contains(";");
 
             if (mustQuote)
             {

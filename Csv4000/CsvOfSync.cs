@@ -49,6 +49,7 @@ namespace Csv4000
 
                       while ((line = reader.ReadLine()) != null)
                       {
+                          //TODO: prevent split when string value contains ;
                           var values = line.Split(';');
                           var item = Activator.CreateInstance<T>();
 
