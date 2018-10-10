@@ -1,5 +1,6 @@
 ﻿using Csv4000.Extensions;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 
@@ -47,10 +48,10 @@ namespace Csv4000
                       if (UseFirstLineAsHeader)
                           reader.ReadLine();
 
+                      var Regex = new System.Text.RegularExpressions.Regex(@"(?:^|;)(?=[^""]|("")?)""?((?(1)[^""]*|[^;""]*))""?(?=;|$)");
                       while ((line = reader.ReadLine()) != null)
                       {
-                          //TODO: prevent split when string value contains ;
-                          var values = line.Split(';');
+                          var values = Regex.Matches(line).OfType<System.Text.RegularExpressions.Match>().Select(f=> f.Groups[2].Value).ToArray();
                           var item = Activator.CreateInstance<T>();
 
                           var i = 0;
