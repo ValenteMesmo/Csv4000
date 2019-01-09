@@ -40,7 +40,7 @@ namespace Csv4000.Tests
 
         private CsvOf<MyModelExemple> createSut()
         {
-            return new CsvOf<MyModelExemple>(@"C:\temp\test.csv");
+            return new CsvOf<MyModelExemple>("test.csv");
         }
 
         [TestMethod]

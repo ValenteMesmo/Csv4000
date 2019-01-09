@@ -13,9 +13,22 @@ namespace Csv4000
         private readonly static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
         private readonly string FilePath;
 
-        public CsvOf(string FilePath)
+        /// <summary>
+        /// Directory used: System.AppDomain.CurrentDomain.BaseDirectory
+        /// </summary>
+        /// <param name="csvFileName">Example: test.csv</param>
+        public CsvOf(string csvFileName) : this(AppDomain.CurrentDomain.BaseDirectory, csvFileName) { }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="directoryPath">Example: c:\temp</param>
+        /// <param name="csvFileName">Example: test.csv</param>
+        public CsvOf(string directoryPath, string csvFileName)
         {
-            this.FilePath = FilePath;
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            FilePath = Path.Combine(directoryPath, csvFileName);
         }
 
         public async Task WriteAsync(T item)
@@ -99,7 +112,13 @@ namespace Csv4000
                 var createHeaderLine = File.Exists(FilePath) == false
                     && UseFirstLineAsHeader;
 
-                using (FileStream fs = new FileStream(FilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(
+                        FilePath
+                        , FileMode.Append
+                        , FileAccess.Write
+                        , FileShare.ReadWrite
+                    )
+                )
                 using (StreamWriter streamWriter = new StreamWriter(fs))
                 {
                     fs.Lock(0, fs.Length);
