@@ -2,7 +2,7 @@
 
 namespace Csv4000.Extensions
 {
-    public static class StringExtensions
+    public static class CsvStringExtensions
     {
         /// <summary>
         /// Turn a string into a CSV cell output
