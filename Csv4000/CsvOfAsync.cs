@@ -82,6 +82,12 @@ namespace Csv4000
                                     prop.SetValue(item, parsedValue);
                             }
 
+                            if (prop.PropertyType == typeof(long))
+                            {
+                                if (long.TryParse(values[i], out long parsedValue))
+                                    prop.SetValue(item, parsedValue);
+                            }
+
                             if (prop.PropertyType == typeof(float))
                             {
                                 if (float.TryParse(values[i], out float parsedValue))
