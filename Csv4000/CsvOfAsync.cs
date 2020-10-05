@@ -68,34 +68,7 @@ namespace Csv4000
                         var values = line.Split(';');
                         var item = Activator.CreateInstance<T>();
 
-                        var i = 0;
-                        foreach (var prop in properties)
-                        {
-                            if (prop.PropertyType == typeof(string))
-                            {
-                                prop.SetValue(item, values[i]);
-                            }
-
-                            if (prop.PropertyType == typeof(int))
-                            {
-                                if (int.TryParse(values[i], out int parsedValue))
-                                    prop.SetValue(item, parsedValue);
-                            }
-
-                            if (prop.PropertyType == typeof(float))
-                            {
-                                if (float.TryParse(values[i], out float parsedValue))
-                                    prop.SetValue(item, parsedValue);
-                            }
-
-                            if (prop.PropertyType == typeof(DateTime))
-                            {
-                                if (DateTime.TryParse(values[i], out DateTime parsedValue))
-                                    prop.SetValue(item, parsedValue);
-                            }
-
-                            i++;
-                        }
+                        ReadProperties(properties, values, item);
 
                         result.Add(item);
                     }
@@ -103,6 +76,44 @@ namespace Csv4000
             });
 
             return result;
+        }
+
+        private static void ReadProperties(System.Reflection.PropertyInfo[] properties, string[] values, T item)
+        {
+            var i = 0;
+            foreach (var prop in properties)
+            {
+                if (prop.PropertyType == typeof(string))
+                {
+                    prop.SetValue(item, values[i]);
+                }
+
+                if (prop.PropertyType == typeof(int))
+                {
+                    if (int.TryParse(values[i], out int parsedValue))
+                        prop.SetValue(item, parsedValue);
+                }
+
+                if (prop.PropertyType == typeof(long))
+                {
+                    if (long.TryParse(values[i], out long parsedValue))
+                        prop.SetValue(item, parsedValue);
+                }
+
+                if (prop.PropertyType == typeof(float))
+                {
+                    if (float.TryParse(values[i], out float parsedValue))
+                        prop.SetValue(item, parsedValue);
+                }
+
+                if (prop.PropertyType == typeof(DateTime))
+                {
+                    if (DateTime.TryParse(values[i], out DateTime parsedValue))
+                        prop.SetValue(item, parsedValue);
+                }
+
+                i++;
+            }
         }
 
         private async Task OpenWriterAsync(Func<StreamWriter, Task> writterAction)

@@ -54,34 +54,7 @@ namespace Csv4000
                           var values = Regex.Matches(line).OfType<System.Text.RegularExpressions.Match>().Select(f=> f.Groups[2].Value).ToArray();
                           var item = Activator.CreateInstance<T>();
 
-                          var i = 0;
-                          foreach (var prop in properties)
-                          {
-                              if (prop.PropertyType == typeof(string))
-                              {
-                                  prop.SetValue(item, values[i]);
-                              }
-
-                              if (prop.PropertyType == typeof(int))
-                              {
-                                  if (int.TryParse(values[i], out int parsedValue))
-                                      prop.SetValue(item, parsedValue);
-                              }
-
-                              if (prop.PropertyType == typeof(float))
-                              {
-                                  if (float.TryParse(values[i], out float parsedValue))
-                                      prop.SetValue(item, parsedValue);
-                              }
-
-                              if (prop.PropertyType == typeof(DateTime))
-                              {
-                                  if (DateTime.TryParse(values[i], out DateTime parsedValue))
-                                      prop.SetValue(item, parsedValue);
-                              }
-
-                              i++;
-                          }
+                          ReadProperties(properties, values, item);
 
                           result.Add(item);
                       }
