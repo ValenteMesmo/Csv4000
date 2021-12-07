@@ -12,7 +12,11 @@ namespace Csv4000
         {
             Lock(() =>
             {
-                File.Delete(FilePath);
+                try
+                {
+                    File.Delete(FilePath);
+                }
+                catch { }
             });
         }
 
@@ -51,7 +55,7 @@ namespace Csv4000
                       var Regex = new System.Text.RegularExpressions.Regex(@"(?:^|;)(?=[^""]|("")?)""?((?(1)[^""]*|[^;""]*))""?(?=;|$)");
                       while ((line = reader.ReadLine()) != null)
                       {
-                          var values = Regex.Matches(line).OfType<System.Text.RegularExpressions.Match>().Select(f=> f.Groups[2].Value).ToArray();
+                          var values = Regex.Matches(line).OfType<System.Text.RegularExpressions.Match>().Select(f => f.Groups[2].Value).ToArray();
                           var item = Activator.CreateInstance<T>();
 
                           ReadProperties(properties, values, item);
@@ -68,7 +72,7 @@ namespace Csv4000
         {
             Lock(() =>
                {
-                   var createHeaderLine = File.Exists(FilePath) == false 
+                   var createHeaderLine = File.Exists(FilePath) == false
                     && UseFirstLineAsHeader;
 
                    using (FileStream fs = new FileStream(FilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
@@ -87,7 +91,7 @@ namespace Csv4000
                                lineValues.Add(prop.Name.ToCsvString());
                            }
 
-                           streamWriter.WriteLine(string.Join(";", lineValues));                           
+                           streamWriter.WriteLine(string.Join(";", lineValues));
                        }
 
                        writterAction(streamWriter);

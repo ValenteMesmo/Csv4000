@@ -11,45 +11,42 @@ namespace Csv4000.Tests
         public float FloatValue { get; set; }
         public DateTime DateValue { get; set; }
         public string StringValue { get; set; }
+        public bool? NullableBool { get; set; }
     }
 
     [TestClass]
     public class UnitTest1
     {
+        private CsvOf<MyModelExemple> createSut()
+        {
+            return new CsvOf<MyModelExemple>($"test-{DateTime.Now.ToString("hh.mm.ss.fff")}-{DateTime.Now.Minute}-{DateTime.Now.Second}-{DateTime.Now.Millisecond}.csv");
+        }
+
         [TestMethod]
         public async Task TestAsync()
         {
             CsvOf<MyModelExemple> sut = createSut();
-            sut.Clear();
+            
 
-            var count = new Random().Next(1, 10);
-            for (int i = 0; i < count; i++)
                 await sut.WriteAsync(
                     new MyModelExemple
                     {
-                        StringValue = "testando " + i,
-                        DateValue = DateTime.Now,
-                        FloatValue = 1.5f * i,
-                        IntValue = 5 * i
+                        NullableBool = true 
                     }
                 );
 
             var result = await sut.ReadAsync();
-            Assert.AreEqual(count, result.Count());
-        }
-
-        private CsvOf<MyModelExemple> createSut()
-        {
-            return new CsvOf<MyModelExemple>("test.csv");
+            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual(true, result.First().NullableBool);
+            sut.Clear();
         }
 
         [TestMethod]
         public void Test()
         {
             var sut = createSut();
-            sut.Clear();
 
-            var count = new Random().Next(1, 10);
+            var count = 10;
             for (int i = 0; i < count; i++)
                 sut.Write(
                     new MyModelExemple
@@ -63,23 +60,24 @@ namespace Csv4000.Tests
 
             var result = sut.Read();
             Assert.AreEqual(count, result.Count());
+            sut.Clear();
         }
 
         [TestMethod]
         public void StringValueContainingComma()
         {
             var sut = createSut();
-            sut.Clear();
 
-                sut.Write(
-                    new MyModelExemple
-                    {
-                        StringValue = "testando;123"
-                    }
-                );
+            sut.Write(
+                new MyModelExemple
+                {
+                    StringValue = "testando;123"
+                }
+            );
 
             var result = sut.Read().First();
             Assert.AreEqual("testando;123", result.StringValue);
+            sut.Clear();
         }
     }
 }

@@ -83,30 +83,39 @@ namespace Csv4000
             var i = 0;
             foreach (var prop in properties)
             {
+                if (i >= values.Length)
+                    break;
+
                 if (prop.PropertyType == typeof(string))
                 {
                     prop.SetValue(item, values[i]);
                 }
 
-                if (prop.PropertyType == typeof(int))
+                if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(int?))
                 {
                     if (int.TryParse(values[i], out int parsedValue))
                         prop.SetValue(item, parsedValue);
                 }
 
-                if (prop.PropertyType == typeof(long))
+                if (prop.PropertyType == typeof(long) || prop.PropertyType == typeof(long?))
                 {
                     if (long.TryParse(values[i], out long parsedValue))
                         prop.SetValue(item, parsedValue);
                 }
 
-                if (prop.PropertyType == typeof(float))
+                if (prop.PropertyType == typeof(float) || prop.PropertyType == typeof(float?))
                 {
                     if (float.TryParse(values[i], out float parsedValue))
                         prop.SetValue(item, parsedValue);
                 }
 
-                if (prop.PropertyType == typeof(DateTime))
+                if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
+                {
+                    if (bool.TryParse(values[i], out bool parsedValue))
+                        prop.SetValue(item, parsedValue);
+                }
+
+                if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?))
                 {
                     if (DateTime.TryParse(values[i], out DateTime parsedValue))
                         prop.SetValue(item, parsedValue);
