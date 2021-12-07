@@ -1,0 +1,34 @@
+name: Valentemesmo.Csv
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    name: Update NuGet Org package
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v1 
+
+      - name: Build generate NuGet package
+        run: |  
+          cd Csv
+          dotnet pack -c Release -o out
+          
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.2
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+        with:                    
+          nuget-api-key: ${{secrets.NUGET_KEY}}
+
+      - name: Push package 1
+        run: dotnet nuget push ./Csv/out/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_KEY}} --skip-duplicate
