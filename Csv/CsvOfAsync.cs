@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -139,7 +140,7 @@ namespace Csv4000
                         , FileShare.ReadWrite
                     )
                 )
-                using (StreamWriter streamWriter = new StreamWriter(fs))
+                using (StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8))
                 {
                     fs.Lock(0, fs.Length);
 

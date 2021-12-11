@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Csv4000
 {
@@ -76,7 +77,7 @@ namespace Csv4000
                     && UseFirstLineAsHeader;
 
                    using (FileStream fs = new FileStream(FilePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-                   using (StreamWriter streamWriter = new StreamWriter(fs))
+                   using (StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8))
                    {
                        fs.Lock(0, fs.Length);
 

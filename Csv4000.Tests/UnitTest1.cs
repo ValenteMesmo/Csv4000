@@ -79,5 +79,22 @@ namespace Csv4000.Tests
             Assert.AreEqual("testando;123", result.StringValue);
             sut.Clear();
         }
+
+        [TestMethod]
+        public void StringValueSpecialCharacter()
+        {
+            var sut = createSut();
+
+            sut.Write(
+                new MyModelExemple
+                {
+                    StringValue = "praça;123"
+                }
+            );
+
+            var result = sut.Read().First();
+            Assert.AreEqual("praça;123", result.StringValue);
+            sut.Clear();
+        }
     }
 }
